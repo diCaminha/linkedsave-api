@@ -1,8 +1,7 @@
 const { debug } = require("console");
-const cors = require("cors");
-
 const app = require("./app");
 const http = require("http");
+const express = require("express");
 
 const linksRoutes = require("./routes/linksRoutes");
 
@@ -48,7 +47,6 @@ const onListening = () => {
 const port = normalizePort(process.env.PORT || "3000");
 app.set("port", port);
 
-app.use(cors());
 
 //add routes
 app.use("/links", linksRoutes);
