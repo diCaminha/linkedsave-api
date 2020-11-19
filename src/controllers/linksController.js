@@ -20,15 +20,15 @@ exports.getLinks = async (req, res) => {
 exports.saveLink = async (req, res) => {
   const linkUrl = req.body.linkUrl;
   const metadata = await urlMetadata(linkUrl);
-  const title =  metadata.title;
-
+  const title = metadata.title;
   const link = {
     id: null,
     title: title,
     linkUrl: linkUrl,
     image: metadata.image,
     source: metadata.source,
-    description: metadata.description
+    description: metadata.description,
+    //logo: metadata.jsonld.logo.url,
   };
 
   try {
@@ -38,7 +38,7 @@ exports.saveLink = async (req, res) => {
       data: linkSaved,
     });
   } catch (err) {
-      console.log("Error occur: " + err);
+    console.log("Error occur: " + err);
     res.status(500).json({
       message: "error trying to save the link in the db: " + err,
     });
