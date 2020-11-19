@@ -1,3 +1,4 @@
+const link = require("../models/link");
 const Link = require("../models/link");
 
 exports.getLinks = async (req, res) => {
@@ -34,4 +35,9 @@ exports.saveLink = async (req, res) => {
       message: "error trying to save the link in the db: " + err,
     });
   }
+};
+
+exports.deleteLink = async (req, res) => {
+    const linkId = req.params.id;
+    await Link.deleteOne({_id: linkId});
 };
