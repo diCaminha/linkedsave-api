@@ -2,6 +2,8 @@ const app = require("./app");
 const http = require("http");
 const { debug } = require("console");
 
+const linksRoutes = require("./routes/linksRoutes");
+
 const normalizePort = (val) => {
   var port = parseInt(val, 10);
 
@@ -43,6 +45,9 @@ const onListening = () => {
 
 const port = normalizePort(process.env.PORT || "3000");
 app.set("port", port);
+
+//add routes
+app.use("/links", linksRoutes);
 
 const server = http.createServer(app);
 server.on("error", onError);

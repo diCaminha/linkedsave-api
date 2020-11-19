@@ -1,0 +1,3 @@
+exports.getLinks = (req, res) => {
+    
+};
