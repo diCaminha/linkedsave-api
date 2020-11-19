@@ -9,6 +9,9 @@ const linkSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  image: String,
+  source: String,
+  description: String,
 });
 
-module.exports = mongoose.model('Link', linkSchema);
+module.exports = mongoose.model("Link", linkSchema);
