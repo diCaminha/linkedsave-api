@@ -2,6 +2,7 @@ const { debug } = require("console");
 const app = require("./app");
 const http = require("http");
 const express = require("express");
+const mongoose = require("mongoose");
 
 const linksRoutes = require("./routes/linksRoutes");
 
@@ -39,14 +40,13 @@ const onError = (error) => {
 };
 
 const onListening = () => {
-    const addr = server.address();
-    const bind = typeof addr === "string" ? "pipe " + addr : "port " + port;
-    debug("Listening on " + bind);
+  const addr = server.address();
+  const bind = typeof addr === "string" ? "pipe " + addr : "port " + port;
+  debug("Listening on " + bind);
 };
 
 const port = normalizePort(process.env.PORT || "3000");
 app.set("port", port);
-
 
 //add routes
 app.use("/links", linksRoutes);
@@ -54,6 +54,13 @@ app.use("/links", linksRoutes);
 const server = http.createServer(app);
 server.on("error", onError);
 server.on("listening", onListening);
-server.listen(port);
 
+mongoose
+  .connect("mongodb://localhost:27017/linkedsavedb")
+  .then((res) => {
+    server.listen(port);
+  })
+  .catch((err) => {
+      console.error("could not connect mongodb: " + err);
+  });
 

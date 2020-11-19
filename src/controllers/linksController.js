@@ -1,24 +1,15 @@
-const links = [
-  {
-    id: 1,
-    title: "Teste 1",
-    linkUrl: "dedwfrewgegethgetheh",
-  },
-  {
-    id: 1,
-    title: "Teste 1",
-    linkUrl: "dedwfrewgegethgetheh",
-  },
-];
+const Link = require('../models/link');
 
-exports.getLinks = (req, res) => {
-  res.status(200).json({
+exports.getLinks = async (req, res) => {
+    const links = await Link.find();
+    
+    res.status(200).json({
     message: "links fetched with success",
     data: links,
   });
 };
 
-exports.saveLink = (req, res) => {
+exports.saveLink = async (req, res) => {
   const title = req.body.title;
   const linkUrl = req.body.linkUrl;
   const link = {
@@ -28,10 +19,10 @@ exports.saveLink = (req, res) => {
   };
   
   console.log(link);
-  links.push(link);
+  const linkSaved = await Link.create(link);
 
   res.status(201).json({
     message: "Link created with success",
-    data: link,
+    data: linkSaved,
   });
 };
