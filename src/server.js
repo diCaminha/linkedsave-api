@@ -5,6 +5,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 
 const linksRoutes = require("./routes/linksRoutes");
+const authRoutes = require("./routes/authRoutes");
 
 const normalizePort = (val) => {
   var port = parseInt(val, 10);
@@ -50,6 +51,7 @@ app.set("port", port);
 
 //add routes
 app.use("/links", linksRoutes);
+app.use("/auth", authRoutes);
 
 const server = http.createServer(app);
 server.on("error", onError);
@@ -61,6 +63,5 @@ mongoose
     server.listen(port);
   })
   .catch((err) => {
-      console.error("could not connect mongodb: " + err);
+    console.error("could not connect mongodb: " + err);
   });
-
