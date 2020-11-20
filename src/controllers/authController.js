@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+require('dotenv/config');
 
 exports.signup = async (req, res) => {
   let pwdHashed = await bcrypt.hash(req.body.password, 10);
@@ -40,7 +41,7 @@ exports.login = async (req, res) => {
     }
     const token = jwt.sign(
       { email: user.email, userId: user._id },
-      "secret_long_key_linkedsave",
+      process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
 
