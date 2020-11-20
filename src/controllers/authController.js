@@ -1,7 +1,7 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-require('dotenv/config');
+require("dotenv/config");
 
 exports.signup = async (req, res) => {
   let pwdHashed = await bcrypt.hash(req.body.password, 10);
@@ -47,7 +47,9 @@ exports.login = async (req, res) => {
 
     res.status(200).json({
       token: token,
+      expiresIn: 1000,
     });
-
-  } catch (err) {}
+  } catch (err) {
+    console.error(err);
+  }
 };
