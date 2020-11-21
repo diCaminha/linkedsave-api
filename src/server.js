@@ -4,6 +4,7 @@ const http = require("http");
 const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+
 const linksRoutes = require("./routes/linksRoutes");
 const authRoutes = require("./routes/authRoutes");
 
@@ -56,6 +57,7 @@ app.use("/auth", authRoutes);
 const server = http.createServer(app);
 server.on("error", onError);
 server.on("listening", onListening);
+
 
 mongoose
   .connect(process.env.MONGO_URL)
