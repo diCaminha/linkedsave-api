@@ -38,6 +38,7 @@ exports.saveLink = async (req, res) => {
     source: metadata.source,
     description: metadata.description,
     userId: userId,
+    read: false,
   };
 
   try {
@@ -57,4 +58,19 @@ exports.saveLink = async (req, res) => {
 exports.deleteLink = async (req, res) => {
   const linkId = req.params.id;
   await Link.deleteOne({ _id: linkId });
+};
+
+exports.readLink = async (req, res) => {
+  try {
+    const linkId = req.body.linkId;
+    const result = await Link.update({ _id: linkId }, { read: true });
+    res.status(200).json({
+      message: "set as read with success",
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: "error trying to set link as read",
+    });
+  }
 };

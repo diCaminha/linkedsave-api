@@ -8,5 +8,6 @@ const router = express.Router();
 router.get("/", linksController.getLinks);
 router.post("/", checkAuth, linksController.saveLink);
 router.delete("/:id", linksController.deleteLink);
+router.put("/:id/read", linksController.readLink);
 
 module.exports = router;

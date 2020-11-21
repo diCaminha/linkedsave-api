@@ -13,7 +13,8 @@ const linkSchema = mongoose.Schema({
   source: String,
   description: String,
   logo: String,
-  userId: String
+  userId: String,
+  read: Boolean
 });
 
 module.exports = mongoose.model("Link", linkSchema);
