@@ -1,16 +1,20 @@
 const urlMetadata = require("url-metadata");
+const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv");
 
-const link = require("../models/link");
 const Link = require("../models/link");
 
 exports.getLinks = async (req, res) => {
   try {
-    const links = await Link.find();
+    const token = req.headers.authorization.split(" ")[1];
+    const tokenDecoded = jwt.decode(token);
+    const links = await Link.find({ userId: tokenDecoded.userId });
     res.status(200).json({
       message: "links fetched with success",
       data: links,
     });
   } catch (err) {
+    console.log(err);
     res.status(500).json({
       message: "error trying to get the links from the db: " + err,
     });
@@ -21,6 +25,11 @@ exports.saveLink = async (req, res) => {
   const linkUrl = req.body.linkUrl;
   const metadata = await urlMetadata(linkUrl);
   const title = metadata.title;
+
+  const token = req.headers.authorization.split(" ")[1];
+  const tokenDecoded = jwt.decode(token, process.env.JWT_SECRET);
+  const userId = tokenDecoded.userId;
+
   const link = {
     id: null,
     title: title,
@@ -28,7 +37,7 @@ exports.saveLink = async (req, res) => {
     image: metadata.image,
     source: metadata.source,
     description: metadata.description,
-    //logo: metadata.jsonld.logo.url,
+    userId: userId,
   };
 
   try {
