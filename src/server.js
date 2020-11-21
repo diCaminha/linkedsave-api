@@ -3,7 +3,7 @@ const app = require("./app");
 const http = require("http");
 const express = require("express");
 const mongoose = require("mongoose");
-
+const dotenv = require("dotenv");
 const linksRoutes = require("./routes/linksRoutes");
 const authRoutes = require("./routes/authRoutes");
 
@@ -58,7 +58,7 @@ server.on("error", onError);
 server.on("listening", onListening);
 
 mongoose
-  .connect("mongodb://localhost:27017/linkedsavedb")
+  .connect(process.env.MONGO_URL)
   .then((res) => {
     server.listen(port);
   })
