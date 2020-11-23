@@ -74,3 +74,30 @@ exports.readLink = async (req, res) => {
     });
   }
 };
+
+exports.getMetadataLink = async (req, res) => {
+  try {
+    const url = req.query.url;
+    console.log(url);
+    const metadata = await urlMetadata(url);
+    const title = metadata.title;
+    const link = {
+      id: null,
+      title: title,
+      linkUrl: url,
+      image: metadata.image,
+      source: metadata.source,
+      description: metadata.description,
+      read: false,
+    };
+
+    res.status(200).json({
+      data: link,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      message: "error getting metadata",
+    });
+  }
+};
