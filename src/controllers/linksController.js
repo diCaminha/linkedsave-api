@@ -2,6 +2,7 @@ const urlMetadata = require("url-metadata");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 
+const asyncErrorHandler = require("../middleware/async-error-handler");
 const ErrorHandler = require("../errorHandler");
 const Link = require("../models/link");
 
@@ -19,7 +20,7 @@ exports.getLinks = async (req, res, next) => {
   }
 };
 
-exports.saveLink = async (req, res, next) => {
+exports.saveLink = asyncErrorHandler(async (req, res, next) => {
   const linkUrl = req.body.linkUrl;
   const metadata = await urlMetadata(linkUrl);
   const title = metadata.title;
@@ -50,7 +51,7 @@ exports.saveLink = async (req, res, next) => {
       new ErrorHandler("error trying to save the link in the db: " + err, 500)
     );
   }
-};
+});
 
 exports.deleteLink = async (req, res) => {
   const linkId = req.params.id;
@@ -72,7 +73,6 @@ exports.readLink = async (req, res, next) => {
 exports.getMetadataLink = async (req, res, next) => {
   try {
     const url = req.query.url;
-    console.log(url);
     const metadata = await urlMetadata(url);
     const title = metadata.title;
     const link = {
