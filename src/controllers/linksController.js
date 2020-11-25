@@ -2,9 +2,10 @@ const urlMetadata = require("url-metadata");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 
+const ErrorHandler = require("../errorHandler");
 const Link = require("../models/link");
 
-exports.getLinks = async (req, res) => {
+exports.getLinks = async (req, res, next) => {
   try {
     const token = req.headers.authorization.split(" ")[1];
     const tokenDecoded = jwt.decode(token);
@@ -14,14 +15,11 @@ exports.getLinks = async (req, res) => {
       data: links,
     });
   } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      message: "error trying to get the links from the db: " + err,
-    });
+    next("error trying to get the links from the db: " + err, 500);
   }
 };
 
-exports.saveLink = async (req, res) => {
+exports.saveLink = async (req, res, next) => {
   const linkUrl = req.body.linkUrl;
   const metadata = await urlMetadata(linkUrl);
   const title = metadata.title;
@@ -48,10 +46,9 @@ exports.saveLink = async (req, res) => {
       data: linkSaved,
     });
   } catch (err) {
-    console.log("Error occur: " + err);
-    res.status(500).json({
-      message: "error trying to save the link in the db: " + err,
-    });
+    next(
+      new ErrorHandler("error trying to save the link in the db: " + err, 500)
+    );
   }
 };
 
@@ -60,7 +57,7 @@ exports.deleteLink = async (req, res) => {
   await Link.deleteOne({ _id: linkId });
 };
 
-exports.readLink = async (req, res) => {
+exports.readLink = async (req, res, next) => {
   try {
     const linkId = req.body.linkId;
     const result = await Link.update({ _id: linkId }, { read: true });
@@ -68,14 +65,11 @@ exports.readLink = async (req, res) => {
       message: "set as read with success",
     });
   } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      message: "error trying to set link as read",
-    });
+    next(new ErrorHandler("Error trying to read the link: " + err, 500));
   }
 };
 
-exports.getMetadataLink = async (req, res) => {
+exports.getMetadataLink = async (req, res, next) => {
   try {
     const url = req.query.url;
     console.log(url);
@@ -95,9 +89,8 @@ exports.getMetadataLink = async (req, res) => {
       data: link,
     });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({
-      message: "error getting metadata",
-    });
+    next(
+      new ErrorHandler("Error trying to get metadata for link: " + err, 500)
+    );
   }
 };
