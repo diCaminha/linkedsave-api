@@ -1,12 +1,13 @@
 const { debug } = require("console");
 const app = require("./app");
 const http = require("http");
-const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 
 const linksRoutes = require("./routes/linksRoutes");
 const authRoutes = require("./routes/authRoutes");
+
+const middleware = require("./middleware/errors");
 
 mongoose
   .connect(process.env.MONGO_URL)
@@ -61,6 +62,8 @@ mongoose
     server.on("listening", onListening);
 
     server.listen(port);
+
+    app.use(middleware);
   })
   .catch((err) => {
     console.error("could not connect mongodb: " + err);
