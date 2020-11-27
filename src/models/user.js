@@ -23,7 +23,7 @@ const userSchema = mongoose.Schema({
     name: {type: String, required: false},
     email: {type: String, required: true, unique: true},
     password: {type: String, required: true},
-    counterReads: {type: Number, set: v => Math.round(v), set: v => Math.round(v) },
+    counterReads: {type: Number, set: v => Math.round(v), set: v => Math.round(v), default: 0},
     links: [linkSchema],
 });
 
