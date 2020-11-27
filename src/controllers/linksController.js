@@ -7,6 +7,7 @@ const ErrorHandler = require("../errorHandler");
 const Link = require("../models/link");
 const User = require("../models/user");
 const { ObjectID } = require("mongodb");
+const AddDayreadUseCase = require("../useCases/AddDayread/addDayread");
 
 exports.getLinks = async (req, res, next) => {
   try {
@@ -104,7 +105,8 @@ exports.readLink = async (req, res, next) => {
     linkRead.read = true;
     user.counterReads = user.counterReads + 1;
     await user.save(function () {});
-    //const result = await Link.update({ _id: linkId }, { read: true });
+    
+    AddDayreadUseCase(user._id);
 
     res.status(200).json({
       message: "set as read with success",

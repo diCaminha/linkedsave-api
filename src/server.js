@@ -6,6 +6,7 @@ const dotenv = require("dotenv");
 
 const linksRoutes = require("./routes/linksRoutes");
 const authRoutes = require("./routes/authRoutes");
+const dayreadRoutes = require("./routes/dayreadRoutes");
 
 const middleware = require("./middleware/errors");
 
@@ -56,6 +57,7 @@ mongoose
     //add routes
     app.use("/links", linksRoutes);
     app.use("/auth", authRoutes);
+    app.use("/dayreads", dayreadRoutes);
 
     const server = http.createServer(app);
     server.on("error", onError);
