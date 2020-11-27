@@ -44,7 +44,6 @@ exports.saveLink = asyncErrorHandler(async (req, res, next) => {
   try {
     const user = await User.findOne({ _id: userId });
     user.links.push(link);
-    user.counterReads = 0;
     const userSaved = await user.save(function () {});
     //const linkSaved = await Link.create(link);
     res.status(201).json({
@@ -58,6 +57,22 @@ exports.saveLink = asyncErrorHandler(async (req, res, next) => {
     );
   }
 });
+
+exports.getCounterReads = async (req,res,next) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const tokenDecoded = jwt.decode(token);
+    const user = await User.findOne({ _id: tokenDecoded.userId });
+    res.status(200).json({
+      data:user.counterReads
+    });
+  } catch(err) {
+    console.log(err);
+    next(
+      new ErrorHandler("error trying to get the counter of reads " + err, 500)
+    );
+  }
+}
 
 exports.deleteLink = async (req, res) => {
   try {
