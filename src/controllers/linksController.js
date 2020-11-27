@@ -5,15 +5,17 @@ const dotenv = require("dotenv");
 const asyncErrorHandler = require("../middleware/async-error-handler");
 const ErrorHandler = require("../errorHandler");
 const Link = require("../models/link");
+const User = require("../models/user");
 
 exports.getLinks = async (req, res, next) => {
   try {
     const token = req.headers.authorization.split(" ")[1];
     const tokenDecoded = jwt.decode(token);
-    const links = await Link.find({ userId: tokenDecoded.userId });
+    const user = await User.findOne({ _id: tokenDecoded.userId });
+    console.log(user);
     res.status(200).json({
       message: "links fetched with success",
-      data: links,
+      data: user.links,
     });
   } catch (err) {
     next("error trying to get the links from the db: " + err, 500);
@@ -41,12 +43,17 @@ exports.saveLink = asyncErrorHandler(async (req, res, next) => {
   };
 
   try {
-    const linkSaved = await Link.create(link);
+    const user = await User.findOne({ _id: userId });
+    console.log("user: " + user);
+    user.links.push(link);
+    const userSaved = await user.save(function(){});
+    //const linkSaved = await Link.create(link);
     res.status(201).json({
       message: "Link created with success",
-      data: linkSaved,
+      data: userSaved,
     });
   } catch (err) {
+    console.log(err);
     next(
       new ErrorHandler("error trying to save the link in the db: " + err, 500)
     );
@@ -62,6 +69,7 @@ exports.readLink = async (req, res, next) => {
   try {
     const linkId = req.body.linkId;
     const result = await Link.update({ _id: linkId }, { read: true });
+
     res.status(200).json({
       message: "set as read with success",
     });
