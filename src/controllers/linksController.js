@@ -6,6 +6,7 @@ const asyncErrorHandler = require("../middleware/async-error-handler");
 const ErrorHandler = require("../errorHandler");
 const Link = require("../models/link");
 const User = require("../models/user");
+const { ObjectID } = require("mongodb");
 
 exports.getLinks = async (req, res, next) => {
   try {
@@ -30,8 +31,10 @@ exports.saveLink = asyncErrorHandler(async (req, res, next) => {
   const tokenDecoded = jwt.decode(token, process.env.JWT_SECRET);
   const userId = tokenDecoded.userId;
 
+  let idLink = ObjectID();
+
   const link = {
-    id: null,
+    id: idLink,
     title: title,
     linkUrl: linkUrl,
     image: metadata.image,
@@ -48,7 +51,7 @@ exports.saveLink = asyncErrorHandler(async (req, res, next) => {
     //const linkSaved = await Link.create(link);
     res.status(201).json({
       message: "Link created with success",
-      data: userSaved,
+      data: link,
     });
   } catch (err) {
     console.log(err);
