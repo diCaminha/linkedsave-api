@@ -46,7 +46,8 @@ exports.saveLink = asyncErrorHandler(async (req, res, next) => {
     const user = await User.findOne({ _id: userId });
     console.log("user: " + user);
     user.links.push(link);
-    const userSaved = await user.save(function(){});
+    user.counterReads = 0;
+    const userSaved = await user.save(function () {});
     //const linkSaved = await Link.create(link);
     res.status(201).json({
       message: "Link created with success",
@@ -61,19 +62,33 @@ exports.saveLink = asyncErrorHandler(async (req, res, next) => {
 });
 
 exports.deleteLink = async (req, res) => {
-  const linkId = req.params.id;
-  await Link.deleteOne({ _id: linkId });
+  const token = req.headers.authorization.split(" ")[1];
+  const tokenDecoded = jwt.decode(token);
+  const user = await User.findOne({ _id: tokenDecoded.userId });
+  const restLinks = user.links.filter((l) => l._id !== req.params.id);
+  user.filters = restLinks;
+  const userSaved = await user.save(function () {});
 };
 
 exports.readLink = async (req, res, next) => {
   try {
+    const token = req.headers.authorization.split(" ")[1];
     const linkId = req.body.linkId;
-    const result = await Link.update({ _id: linkId }, { read: true });
+    const tokenDecoded = jwt.decode(token);
+    const user = await User.findOne({ _id: tokenDecoded.userId });
+    const linkRead = user.links.filter((l) => l._id == linkId)[0];
+    console.log("testing...");
+    console.log(linkRead);
+    linkRead.read = true;
+    user.counterReads = user.counterReads + 1;
+    await user.save(function () {});
+    //const result = await Link.update({ _id: linkId }, { read: true });
 
     res.status(200).json({
       message: "set as read with success",
     });
   } catch (err) {
+    console.log(err);
     next(new ErrorHandler("Error trying to read the link: " + err, 500));
   }
 };
