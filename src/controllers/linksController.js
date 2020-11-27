@@ -12,7 +12,6 @@ exports.getLinks = async (req, res, next) => {
     const token = req.headers.authorization.split(" ")[1];
     const tokenDecoded = jwt.decode(token);
     const user = await User.findOne({ _id: tokenDecoded.userId });
-    console.log(user);
     res.status(200).json({
       message: "links fetched with success",
       data: user.links,
@@ -44,7 +43,6 @@ exports.saveLink = asyncErrorHandler(async (req, res, next) => {
 
   try {
     const user = await User.findOne({ _id: userId });
-    console.log("user: " + user);
     user.links.push(link);
     user.counterReads = 0;
     const userSaved = await user.save(function () {});
@@ -62,12 +60,20 @@ exports.saveLink = asyncErrorHandler(async (req, res, next) => {
 });
 
 exports.deleteLink = async (req, res) => {
-  const token = req.headers.authorization.split(" ")[1];
-  const tokenDecoded = jwt.decode(token);
-  const user = await User.findOne({ _id: tokenDecoded.userId });
-  const restLinks = user.links.filter((l) => l._id !== req.params.id);
-  user.filters = restLinks;
-  const userSaved = await user.save(function () {});
+  try {
+    const linkId = req.params.id;
+    const token = req.headers.authorization.split(" ")[1];
+    const tokenDecoded = jwt.decode(token);
+    const user = await User.findOne({ _id: tokenDecoded.userId });
+    const restLinks = user.links.filter((l) => l._id != linkId);
+    user.links = restLinks;
+    await user.save(function () {});
+  } catch (err) {
+    consoler.log(err);
+    res.status(500).json({
+      message: "error deleting the link: " + err
+    });
+  }
 };
 
 exports.readLink = async (req, res, next) => {
@@ -77,8 +83,6 @@ exports.readLink = async (req, res, next) => {
     const tokenDecoded = jwt.decode(token);
     const user = await User.findOne({ _id: tokenDecoded.userId });
     const linkRead = user.links.filter((l) => l._id == linkId)[0];
-    console.log("testing...");
-    console.log(linkRead);
     linkRead.read = true;
     user.counterReads = user.counterReads + 1;
     await user.save(function () {});
