@@ -16,7 +16,7 @@ module.exports = async (userId) => {
     const dateString =
       date.getMonth() + "-" + date.getUTCDate() + "-" + date.getFullYear();
     const dayOfWeek = days[date.getDay()];
-
+    console.log(dateString);
     const dayread = await Dayread.findOne({ user: userId, date: dateString });
     console.log(dayread);
     if (!dayread) {
@@ -30,11 +30,9 @@ module.exports = async (userId) => {
       const savedDayread = await Dayread.create(newDayread);
       console.log(savedDayread);
     } else {
-      const updatedDayread = await Dayread.findOneAndUpdate(
-        dayread._id,
-        { $inc: { total: 1 } },
-        function () {}
-      );
+      dayread.total += 1;
+      let savedDayread = await dayread.save();
+      console.log(savedDayread);
     }
   } catch (err) {
     console.log(err);
