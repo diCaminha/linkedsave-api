@@ -77,7 +77,7 @@ mongoose
           clientSecret: process.env.GOOGLE_CLIENT_SECRET,
           callbackURL: "/auth/google/callback",
         },
-        (accessToken) => {
+        (accessToken, refreshToken, profile, done) => {
           console.log(accessToken);
         }
       )
