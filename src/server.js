@@ -4,14 +4,13 @@ const http = require("http");
 const mongoose = require("mongoose");
 
 require("dotenv");
+const passport = require("./services/passport");
 
 const linksRoutes = require("./routes/linksRoutes");
 const authRoutes = require("./routes/authRoutes");
 const dayreadRoutes = require("./routes/dayreadRoutes");
 
 const middleware = require("./middleware/errors");
-const passport = require("passport");
-const GoogleStrategy = require("passport-google-oauth20").Strategy;
 
 mongoose
   .connect(process.env.MONGO_URL)
@@ -70,18 +69,7 @@ mongoose
 
     app.use(middleware);
 
-    passport.use(
-      new GoogleStrategy(
-        {
-          clientID: process.env.GOOGLE_CLIENT_ID,
-          clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-          callbackURL: "/auth/google/callback",
-        },
-        (accessToken, refreshToken, profile, done) => {
-          console.log(accessToken);
-        }
-      )
-    );
+    app.use(passport.initialize());
   })
   .catch((err) => {
     console.error("could not connect mongodb: " + err);
