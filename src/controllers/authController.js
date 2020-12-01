@@ -2,13 +2,17 @@ const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv/config");
+const JwtStrategy = require("passport-jwt").Strategy;
+const ExtractJwt = require("passport-jwt").ExtractJwt;
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const FacebookStrategy = require("passport-facebook").Strategy;
 
 exports.signup = async (req, res) => {
   let pwdHashed = await bcrypt.hash(req.body.password, 10);
   const user = new User({
     name: req.body.name,
     email: req.body.email,
-    password: pwdHashed
+    password: pwdHashed,
   });
 
   try {
@@ -53,3 +57,15 @@ exports.login = async (req, res) => {
     console.error(err);
   }
 };
+
+function findOrCreate(user) {
+  if (CheckUser(user)) {
+    // if user exists then return user
+    return user;
+  } else {
+    // else create a new user
+  }
+}
+function checkUser(input) {
+  return true;
+}
