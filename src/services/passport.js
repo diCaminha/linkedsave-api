@@ -4,7 +4,6 @@ const mongoose = require("mongoose");
 require("dotenv/config");
 
 const User = require("../models/user");
-console.log(process.env.GOOGLE_CLIENT_ID);
 passport.use(
   new GoogleStrategy(
     {
@@ -13,9 +12,9 @@ passport.use(
       callbackURL: "/auth/google/callback",
     },
     (accessToken, refreshToken, profile, done) => {
-     //montar usuario com id do google e dados do profile
-      
-    }
+      //montar usuario com id do google e dados do profile
+      console.log(profile);
+   }
   )
 );
 
