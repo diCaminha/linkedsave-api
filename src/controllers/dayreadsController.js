@@ -8,4 +8,4 @@ exports.getDayreads = async (req, res, next) => {
   res.status(200).json({
     data: dayReads,
   });
-};console.log
+};

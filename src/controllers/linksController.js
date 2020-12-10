@@ -23,7 +23,7 @@ exports.getLinks = async (req, res, next) => {
   }
 };
 
-exports.saveLink = asyncErrorHandler(async (req, res, next) => {
+exports.saveLink = async (req, res, next) => {
   const linkUrl = req.body.linkUrl;
   const metadata = await urlMetadata(linkUrl);
   const title = metadata.title;
@@ -60,23 +60,23 @@ exports.saveLink = asyncErrorHandler(async (req, res, next) => {
       new ErrorHandler("error trying to save the link in the db: " + err, 500)
     );
   }
-});
+};
 
-exports.getCounterReads = async (req,res,next) => {
+exports.getCounterReads = async (req, res, next) => {
   try {
     const token = req.headers.authorization.split(" ")[1];
     const tokenDecoded = jwt.decode(token);
     const user = await User.findOne({ _id: tokenDecoded.userId });
     res.status(200).json({
-      data:user.counterReads
+      data: user.counterReads,
     });
-  } catch(err) {
+  } catch (err) {
     console.log(err);
     next(
       new ErrorHandler("error trying to get the counter of reads " + err, 500)
     );
   }
-}
+};
 
 exports.deleteLink = async (req, res) => {
   try {
@@ -90,7 +90,7 @@ exports.deleteLink = async (req, res) => {
   } catch (err) {
     consoler.log(err);
     res.status(500).json({
-      message: "error deleting the link: " + err
+      message: "error deleting the link: " + err,
     });
   }
 };
@@ -105,7 +105,7 @@ exports.readLink = async (req, res, next) => {
     linkRead.read = true;
     user.counterReads = user.counterReads + 1;
     await user.save(function () {});
-    
+
     AddDayreadUseCase(user._id);
 
     res.status(200).json({
