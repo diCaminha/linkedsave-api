@@ -29,12 +29,13 @@ exports.login = async (req, res) => {
     const user = await User.findOne({ email: req.body.email });
     if (!user) {
       res.status(401).json({
-        message: "auth error.",
+        message: "user doesn't exist.",
       });
     }
-    const isPwdCorrect = bcrypt.compare(req.body.password, user.password);
+    const isPwdCorrect = await bcrypt.compare(req.body.password, user.password);
+    console.log(req.body.password, user.password);
     if (!isPwdCorrect) {
-      res.status(401).json({
+      return res.status(401).json({
         message: "password is not correct.",
       });
     }
