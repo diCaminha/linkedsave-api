@@ -50,6 +50,6 @@ exports.login = async (req, res) => {
       expiresIn: 100000,
     });
   } catch (err) {
-    console.error(err);
+    throw new Error(err);
   }
 };
