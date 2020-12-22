@@ -2,8 +2,8 @@ const { debug } = require("console");
 const app = require("./app");
 const http = require("http");
 const mongoose = require("mongoose");
-
 require("dotenv");
+
 const passport = require("./services/passport");
 
 const linksRoutes = require("./routes/linksRoutes");
